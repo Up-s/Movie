@@ -13,9 +13,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        
+        let tableVC = UINavigationController(rootViewController: TableViewController())
+        let collectionVC = UINavigationController(rootViewController: CollectionViewController())
+        
+        tableVC.tabBarItem.title = "Table"
+        tableVC.tabBarItem.image = UIImage(named: "table")
+        collectionVC.tabBarItem.title = "Collection"
+        collectionVC.tabBarItem.image = UIImage(named: "collection")
+        
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [tableVC, collectionVC]
+        
+        window?.rootViewController = tabBarController
+        window?.makeKeyAndVisible()
+        
         return true
     }
 
