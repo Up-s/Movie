@@ -17,28 +17,6 @@ class MovieTableViewCell: UITableViewCell {
     let reservationRateLabel = UILabel()    // 예매율
     let dateLabel = UILabel()               // 개봉일
     
-//    var poster: String = "" {
-//        didSet { posterImageView.image = UIImage(named: poster) }
-//    }
-//    var title: String = "" {
-//        didSet { titleLabel.text = title }
-//    }
-//    var grade: Int = 0 {
-//        didSet { gradeImageView.image = UIImage(named: String(grade)) }
-//    }
-//    var userRating: Double = 0 {
-//        didSet { userRatingLabel.text = String(userRating) }
-//    }
-//    var reservationGrade: Int = 0 {
-//        didSet { reservationGradeLabel.text = String(reservationGrade) }
-//    }
-//    var reservationRate: Double = 0 {
-//        didSet { reservationRateLabel.text = String(reservationRate) }
-//    }
-//    var data: String = "" {
-//        didSet { dataLabel.text = data }
-//    }
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -87,7 +65,6 @@ class MovieTableViewCell: UITableViewCell {
         
         dateLabel.font = dateLabel.font.withSize(FontSize.dateFontSize)
         self.addSubview(dateLabel)
-        
     }
     
     private struct Standard {
