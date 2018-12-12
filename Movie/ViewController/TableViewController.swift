@@ -10,48 +10,29 @@ import UIKit
 
 class TableViewController: UIViewController {
     
+    // UI
     private let movieTableView = UITableView()
-    private let movieTableViewCellIdentifier = "MovieTableViewCell"
     
+    // cellidentifier
+    private let movieCellIdentifier = "MovieTableViewCell"
+    
+    // data
     private var movieData: [Movie] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         configure()
         configureLayout()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        guard let url = URL(string: "http://connect-boxoffice.run.goorm.io/movies") else { return }
-        
-        let session = URLSession(configuration: .default)
-        let dataTask = session.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            }
-            
-            guard let data = data else {return}
-            
-            do {
-                let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-                self.movieData = apiResponse.results
-                print("----", self.movieData)
-            } catch(let error) {
-                print("asd", error.localizedDescription)
-            }
-        }
-        dataTask.resume()
+        dataFetch(url: MovieURL.reservationRateURL)
     }
     
     private func configure() {
+        
+        
         movieTableView.dataSource = self
-        
-        movieTableView.register(MovieTableViewCell.self, forCellReuseIdentifier: movieTableViewCellIdentifier)
-        
+        movieTableView.rowHeight = 150
+        movieTableView.register(MovieTableViewCell.self, forCellReuseIdentifier: movieCellIdentifier)
         view.addSubview(movieTableView)
     }
     
@@ -63,6 +44,20 @@ class TableViewController: UIViewController {
         movieTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
     }
     
+    private func dataFetch(url: String) {
+        let provider = MovieProvider()
+        provider.fetchMovie(
+            url: url,
+            completion: { [weak self] movies in
+                guard let self = self else { return }
+                self.movieData = movies
+                DispatchQueue.main.async {
+                    self.movieTableView.reloadData()
+                }
+            }
+        )
+    }
+    
 }
 
 
@@ -72,9 +67,36 @@ extension TableViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: movieTableViewCellIdentifier) as! MovieTableViewCell
-        cell.poster = "collection"
+        let movies = self.movieData
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: movieCellIdentifier) as! MovieTableViewCell
+        cell.posterImageView.fetchImage(with: movies[indexPath.row].thumb)
+        cell.titleLabel.text = movies[indexPath.row].title
+        cell.userRatingLabel.text = movies[indexPath.row].stringUserRating
+        cell.reservationGradeLabel.text = movies[indexPath.row].stringReservationGrade
+        cell.reservationRateLabel.text = movies[indexPath.row].stringReservationRate
+        cell.dateLabel.text = movies[indexPath.row].stringDate
         
         return cell
+    }
+}
+
+extension UIImageView {
+    func fetchImage(with url: String) {
+        guard let url = URL(string: url) else { return }
+        
+        let dataTask = URLSession.shared.dataTask(
+            with: url,
+            completionHandler: { [weak self] (data, response, error) in
+                
+                guard error == nil else { return }
+                guard let data = data else { return }
+                let image = UIImage(data: data)
+                DispatchQueue.main.async {
+                    self?.image = image
+                }
+            }
+        )
+        dataTask.resume()
     }
 }

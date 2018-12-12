@@ -8,37 +8,44 @@
 
 import Foundation
 
-/*
- {
- grade: 12,
- thumb: "http://movie.phinf.naver.net/20171201_181/1512109983114kcQVl_JPEG/movie_image.jpg?type=m99_141_2",
- reservation_grade: 1,
- title: "신과함께-죄와벌",
- reservation_rate: 35.5,
- user_rating: 7.98,
- date: "2017-12-20",
- id: "5a54c286e8a71d136fb5378e"
- }
- */
-
 struct APIResponse: Codable {
-    let results: [Movie]
+    let movies: [Movie]
+    let orderType: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case movies
+        case orderType = "order_type"
+    }
 }
 
 struct Movie: Codable {
-    let grade: Int
-    let thumb: String
-    let reservationGrade: Int
-    let title: String
     let reservationRate: Double
-    let userRating: Double
-    let data: String
     let id: String
+    let userRating: Double
+    let grade: Int
+    let date, title: String
+    let reservationGrade: Int
+    let thumb: String
     
     enum CodingKeys: String, CodingKey {
-        case grade, thumb, title, data, id
-        case reservationGrade = "reservation_grade"
         case reservationRate = "reservation_rate"
+        case id
         case userRating = "user_rating"
+        case grade, date, title
+        case reservationGrade = "reservation_grade"
+        case thumb
+    }
+    
+    var stringUserRating: String {
+        return "평점 : " + "\(self.userRating)"
+    }
+    var stringReservationGrade: String {
+        return "예매순위 : " + "\(self.reservationGrade)"
+    }
+    var stringReservationRate: String {
+        return "예매율 : " + "\(self.reservationRate)"
+    }
+    var stringDate: String {
+        return "개봉일 : " + "\(self.date)"
     }
 }
