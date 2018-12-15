@@ -45,6 +45,7 @@ class TableViewController: UIViewController {
     }
     
     private func dataFetch(url: String) {
+        
         let provider = MovieProvider()
         provider.fetchMovie(
             url: url,
