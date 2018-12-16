@@ -79,8 +79,8 @@ class DetailCommentTableViewCell: UITableViewCell {
         userIdLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: Standard.space).isActive = true
         
         ratingStarView.translatesAutoresizingMaskIntoConstraints = false
-        ratingStarView.topAnchor.constraint(equalTo: self.topAnchor, constant: Standard.space).isActive = true
-        ratingStarView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        ratingStarView.leadingAnchor.constraint(equalTo: userIdLabel.trailingAnchor, constant: Standard.space).isActive = true
+        ratingStarView.centerYAnchor.constraint(equalTo: userIdLabel.centerYAnchor).isActive = true
         ratingStarView.heightAnchor.constraint(equalToConstant: Standard.ratingStarViewHeight).isActive = true
         ratingStarView.widthAnchor.constraint(equalToConstant: Standard.ratingStarViewWidth).isActive = true
         
