@@ -8,52 +8,105 @@
 
 import Foundation
 
-class MovieProvider {
-
-    enum URLType {
-        case rate
-        case date
-        case grade
-
-        var url: URL? {
-            switch self {
-            case .date:
-                return URL(string: "http://connect-boxoffice.run.goorm.io/movies?order_type=0")
-            case .grade:
-                return URL(string: "http://connect-boxoffice.run.goorm.io/movies?order_type=1")
-            case .rate:
-                return URL(string: "http://connect-boxoffice.run.goorm.io/movies?order_type=2")
-            }
-        }
-    }
+struct APIMovieResponse: Codable {
+    let movies: [Movie]
+    let orderType: Int
     
-    func fetchMovie(url: String, completion: @escaping ([Movie]) -> Void) {
-        guard let url = URL(string: url) else { return }
-        let session = URLSession(configuration: .default)
-        let dataTask = session.dataTask(with: url) { (data: Data?, response: URLResponse?, error: Error?) in
-            guard let data = data else {return}
-            do {
-                let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-                completion(apiResponse.movies)
-            } catch(let error) {
-                print("error :", error.localizedDescription)
-            }
-        }
-        dataTask.resume()
-    }
-    
-    func fetchMovie(type: URLType, completion: @escaping ([Movie]) -> Void) {
-        guard let url = type.url else { return }
-        let session = URLSession(configuration: .default)
-        let dataTask = session.dataTask(with: url) { (data: Data?, response: URLResponse?, error: Error?) in
-            guard let data = data else {return}
-            do {
-                let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-                completion(apiResponse.movies)
-            } catch(let error) {
-                print("error :", error.localizedDescription)
-            }
-        }
-        dataTask.resume()
+    enum CodingKeys: String, CodingKey {
+        case movies
+        case orderType = "order_type"
     }
 }
+
+struct Movie: Codable {
+    let reservationRate: Double
+    let id: String
+    let userRating: Double
+    let grade: Int
+    let date, title: String
+    let reservationGrade: Int
+    let thumb: String
+    
+    enum CodingKeys: String, CodingKey {
+        case reservationRate = "reservation_rate"
+        case id
+        case userRating = "user_rating"
+        case grade, date, title
+        case reservationGrade = "reservation_grade"
+        case thumb
+    }
+    
+    var sumUserRating: String {
+        return "평점 : " + "\(self.userRating)"
+    }
+    var sumReservationGrade: String {
+        return "예매순위 : " + "\(self.reservationGrade)"
+    }
+    var sumReservationRate: String {
+        return "예매율 : " + "\(self.reservationRate)"
+    }
+    var sumDate: String {
+        return "개봉일 : " + "\(self.date)"
+    }
+}
+
+enum OrderType {
+    case grade
+    case rate
+    case date
+    
+    init(_ number: Int) {
+        switch number {
+        case 0: self = .grade
+        case 1: self = .rate
+        default: self = .date
+        }
+    }
+    
+    var type: String? {
+        switch self {
+        case .grade:
+            return "예매율순"
+        case .rate:
+            return "큐레이션"
+        case .date:
+            return "개봉일순"
+        }
+    }
+}
+
+enum URLType {
+    case rate
+    case date
+    case grade
+    
+    var url: URL? {
+        switch self {
+        case .grade:
+            return URL(string: "http://connect-boxoffice.run.goorm.io/movies?order_type=0")
+        case .rate:
+            return URL(string: "http://connect-boxoffice.run.goorm.io/movies?order_type=1")
+        case .date:
+            return URL(string: "http://connect-boxoffice.run.goorm.io/movies?order_type=2")
+        }
+    }
+}
+
+let FetchMovieNotification = Notification.Name("FetchMovie")
+
+func fetchMovies(type: URLType) {
+    guard let url = type.url else { return }
+    let session = URLSession(configuration: .default)
+    let dataTask = session.dataTask(with: url) { (data: Data?, response: URLResponse?, error: Error?) in
+        guard let data = data else {return}
+        do {
+            let apiResponse = try JSONDecoder().decode(APIMovieResponse.self, from: data)
+            NotificationCenter.default.post(name: FetchMovieNotification, object: nil, userInfo: ["response": apiResponse])
+        } catch(let error) {
+            print("error :", error.localizedDescription)
+        }
+    }
+    dataTask.resume()
+}
+
+

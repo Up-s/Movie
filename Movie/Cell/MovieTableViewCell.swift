@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class MovieTableViewCell: UITableViewCell {
     let posterImageView = UIImageView()     // 영화포스터
     let titleLabel = UILabel()              // 영화제목
@@ -40,16 +41,20 @@ class MovieTableViewCell: UITableViewCell {
     }
     
     private struct FontSize {
-        static let titleFontSize: CGFloat = 25
-        static let otherFontSize: CGFloat = 15
+        static let titleFontSize: CGFloat = 20
+        static let otherFontSize: CGFloat = 12
         static let dateFontSize: CGFloat = 15
     }
+
     
     private func configure() {
         self.addSubview(posterImageView)
         
         titleLabel.font = titleLabel.font.withSize(FontSize.titleFontSize)
+        titleLabel.clipsToBounds = false
         self.addSubview(titleLabel)
+        
+        self.addSubview(gradeImageView)
         
         userRatingLabel.font = userRatingLabel.font.withSize(FontSize.otherFontSize)
         userRatingLabel.textColor = .gray
@@ -70,6 +75,7 @@ class MovieTableViewCell: UITableViewCell {
     private struct Standard {
         static let space: CGFloat = 10
         static let titleTopSpace: CGFloat = 20
+        static let gradeImageViewSize: CGFloat = 25
     }
     
     private func configureLayout() {
@@ -81,6 +87,12 @@ class MovieTableViewCell: UITableViewCell {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: Standard.titleTopSpace).isActive = true
         titleLabel.leadingAnchor.constraint(equalTo: posterImageView.trailingAnchor, constant: Standard.space).isActive = true
+        
+        gradeImageView.translatesAutoresizingMaskIntoConstraints = false
+        gradeImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: Standard.titleTopSpace).isActive = true
+        gradeImageView.leadingAnchor .constraint(equalTo: titleLabel.trailingAnchor, constant: Standard.space).isActive = true
+        gradeImageView.widthAnchor.constraint(equalToConstant: Standard.gradeImageViewSize).isActive = true
+        gradeImageView.heightAnchor.constraint(equalToConstant: Standard.gradeImageViewSize).isActive = true
         
         userRatingLabel.translatesAutoresizingMaskIntoConstraints = false
         userRatingLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Standard.space).isActive = true

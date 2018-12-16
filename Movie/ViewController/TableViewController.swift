@@ -9,31 +9,42 @@
 import UIKit
 
 class TableViewController: UIViewController {
-    
-    // UI
     private let movieTableView = UITableView()
     
-    // cellidentifier
-    private let movieCellIdentifier = "MovieTableViewCell"
-    
-    // data
-    private var movieData: [Movie] = []
+    private let movieTableViewCellIdentifier = "MovieTableViewCell"
 
+    private var movies: [Movie] = []
+    private var orderType: OrderType = OrderType.grade
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configure()
         configureLayout()
-        dataFetch(url: MovieURL.reservationRateURL)
+        
     }
     
     private func configure() {
+        fetchMovies(type: URLType.grade)
         
+        // navigate
+        let typeBarButton = UIBarButtonItem(
+            image: UIImage(named: "setting"),
+            style: UIBarButtonItem.Style.plain,
+            target: self,
+            action: #selector(barButtonAction))
+        typeBarButton.tintColor = .white
+        navigationItem.rightBarButtonItem = typeBarButton
         
+        // tableview
         movieTableView.dataSource = self
+        movieTableView.delegate = self
         movieTableView.rowHeight = 150
-        movieTableView.register(MovieTableViewCell.self, forCellReuseIdentifier: movieCellIdentifier)
+        movieTableView.register(MovieTableViewCell.self, forCellReuseIdentifier: movieTableViewCellIdentifier)
         view.addSubview(movieTableView)
+        
+        // notification
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchMovieNotiAction), name: FetchMovieNotification, object: nil)
     }
     
     private func configureLayout() {
@@ -44,59 +55,47 @@ class TableViewController: UIViewController {
         movieTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
     }
     
-    private func dataFetch(url: String) {
-        
-        let provider = MovieProvider()
-        provider.fetchMovie(
-            url: url,
-            completion: { [weak self] movies in
-                guard let self = self else { return }
-                self.movieData = movies
-                DispatchQueue.main.async {
-                    self.movieTableView.reloadData()
-                }
-            }
-        )
+    @objc private func fetchMovieNotiAction(_ noti: Notification) {
+        guard let response = noti.userInfo?["response"] as? APIMovieResponse else { return }
+        movies = response.movies
+        orderType = OrderType.init(response.orderType)
+        DispatchQueue.main.async {
+            self.navigationItem.title = self.orderType.type
+            self.movieTableView.reloadData()
+        }
+    }
+    
+    @objc private func barButtonAction(_ sender: UIButton) {
+        alert(vc: self)
     }
 }
 
 
 extension TableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return movieData.count
+        return movies.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let movies = self.movieData
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: movieTableViewCellIdentifier) as? MovieTableViewCell else {return UITableViewCell()}
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: movieCellIdentifier) as! MovieTableViewCell
         cell.posterImageView.fetchImage(with: movies[indexPath.row].thumb)
         cell.titleLabel.text = movies[indexPath.row].title
-        cell.userRatingLabel.text = movies[indexPath.row].stringUserRating
-        cell.reservationGradeLabel.text = movies[indexPath.row].stringReservationGrade
-        cell.reservationRateLabel.text = movies[indexPath.row].stringReservationRate
-        cell.dateLabel.text = movies[indexPath.row].stringDate
+        cell.gradeImageView.image = UIImage(named: String(movies[indexPath.row].grade))
+        cell.userRatingLabel.text = movies[indexPath.row].sumUserRating
+        cell.reservationGradeLabel.text = movies[indexPath.row].sumReservationGrade
+        cell.reservationRateLabel.text = movies[indexPath.row].sumReservationRate
+        cell.dateLabel.text = movies[indexPath.row].sumDate
         
         return cell
     }
 }
 
-extension UIImageView {
-    func fetchImage(with url: String) {
-        guard let url = URL(string: url) else { return }
-        
-        let dataTask = URLSession.shared.dataTask(
-            with: url,
-            completionHandler: { [weak self] (data, response, error) in
-                
-                guard error == nil else { return }
-                guard let data = data else { return }
-                let image = UIImage(data: data)
-                DispatchQueue.main.async {
-                    self?.image = image
-                }
-            }
-        )
-        dataTask.resume()
+extension TableViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailVC = DetailViewController()
+        detailVC.id = movies[indexPath.row].id
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
+
