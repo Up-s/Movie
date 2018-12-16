@@ -94,7 +94,14 @@ extension CollectionViewController: UICollectionViewDataSource {
         
         return cell
     }
-    
+}
+
+extension CollectionViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detailVC = DetailViewController()
+        detailVC.id = movies[indexPath.row].id
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
 }
 
 extension CollectionViewController: UICollectionViewDelegateFlowLayout {
