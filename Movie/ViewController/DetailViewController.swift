@@ -126,7 +126,7 @@ extension DetailViewController: UITableViewDataSource {
             
             cell.userIdLabel.text = comments[indexPath.row].writer
             cell.ratingStarView.rating = CGFloat(comments[indexPath.row].rating)
-            cell.dateLabel.text = "00000"
+            cell.dateLabel.text = comments[indexPath.row].changeTimestamp
             cell.commentLabel.text = comments[indexPath.row].contents
             
             return cell

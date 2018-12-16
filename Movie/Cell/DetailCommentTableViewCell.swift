@@ -40,7 +40,7 @@ class DetailCommentTableViewCell: UITableViewCell {
     
     private struct FontSize {
         static let userIdLabelFontSize: CGFloat = 20
-        static let dateLabelFontSize: CGFloat = 20
+        static let dateLabelFontSize: CGFloat = 15
     }
     
     private func configure() {

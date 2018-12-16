@@ -16,6 +16,13 @@ struct Comment: Codable {
     let rating: Double
     let timestamp: Double
     let contents, writer, id: String
+    
+    var changeTimestamp: String {
+        let date = NSDate(timeIntervalSince1970: timestamp)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "YYYY-MM-dd, hh:mm:ss"
+        return dateFormatter.string(from: date as Date)
+    }
 }
 
 let FetchCommentNotification = Notification.Name("FetchComment")
