@@ -21,27 +21,31 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // fetch
+        fetch()
         
+        // ui
         configure()
         configureLayout()
     }
     
+    // MARK: - ui
     private func configure() {
-        // fetch
-        guard let id = id else { return }
-        guard let movieURL = URL(string: "http://connect-boxoffice.run.goorm.io/movie?id=" + id) else {return}
-        fetchDetail(url: movieURL)
-        guard let commentURL = URL(string: "http://connect-boxoffice.run.goorm.io/comments?movie_id=" + id) else {return}
-        fetchComment(url: commentURL)
-        
         // tableview
+        let refershControl = UIRefreshControl()
+        refershControl.attributedTitle = NSAttributedString(string: "Reload...")
+        refershControl.addTarget(self, action: #selector(reloadData), for: .valueChanged)
+        detailTableView.refreshControl = refershControl
+        
         detailTableView.dataSource = self
         detailTableView.delegate = self
         detailTableView.allowsSelection = false
+        
         detailTableView.register(DetailInfoTableViewCell.self, forCellReuseIdentifier: detailInfoCellIdentifier)
         detailTableView.register(DetailSynopsisTableViewCell.self, forCellReuseIdentifier: detailSynopsisCellIdentifier)
         detailTableView.register(DetailStaffTableViewCell.self, forCellReuseIdentifier: detailStaffCellIdentifier)
         detailTableView.register(DetailCommentTableViewCell.self, forCellReuseIdentifier: detailCommentCellIdentifier)
+        
         view.addSubview(detailTableView)
         
         // notification
@@ -49,6 +53,15 @@ class DetailViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(fetchCommentNotiAction), name: FetchCommentNotification, object: nil)
     }
     
+    private func configureLayout() {
+        detailTableView.translatesAutoresizingMaskIntoConstraints = false
+        detailTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        detailTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        detailTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        detailTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+    }
+    
+    // MARK: - function
     @objc private func fetchDetailNotiAction(_ noti: Notification) {
         guard let response = noti.userInfo?["response"] as? Detail else { return }
         detailData = response
@@ -60,25 +73,28 @@ class DetailViewController: UIViewController {
     @objc private func fetchCommentNotiAction(_ noti: Notification) {
         guard let response = noti.userInfo?["response"] as? APICommentResponse else { return }
         comments = response.comments
-        print(comments)
         DispatchQueue.main.async {
             self.detailTableView.reloadData()
         }
     }
     
-    private struct Standard {
-        static let space: CGFloat = 10
+    private func fetch() {
+        guard let id = id else { return }
+        guard let movieURL = URL(string: "http://connect-boxoffice.run.goorm.io/movie?id=" + id) else {return}
+        MovieService().fetchDetail(url: movieURL)
+        guard let commentURL = URL(string: "http://connect-boxoffice.run.goorm.io/comments?movie_id=" + id) else {return}
+        MovieService().fetchComment(url: commentURL)
     }
     
-    private func configureLayout() {
-        detailTableView.translatesAutoresizingMaskIntoConstraints = false
-        detailTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        detailTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        detailTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        detailTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+    @objc private func reloadData() {
+        if detailTableView.refreshControl!.isRefreshing {
+            fetch()
+            detailTableView.refreshControl?.endRefreshing()
+        }
     }
 }
 
+// MARK: - extension
 extension DetailViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 4
@@ -124,7 +140,7 @@ extension DetailViewController: UITableViewDataSource {
         } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: detailCommentCellIdentifier) as? DetailCommentTableViewCell else {return UITableViewCell()}
             
-            cell.userIdLabel.text = comments[indexPath.row].writer
+            cell.writerLabel.text = comments[indexPath.row].writer
             cell.ratingStarView.rating = CGFloat(comments[indexPath.row].rating)
             cell.dateLabel.text = comments[indexPath.row].changeTimestamp
             cell.commentLabel.text = comments[indexPath.row].contents
@@ -138,10 +154,6 @@ extension DetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
             return 300
-        } else if indexPath.section == 1 {
-            return UITableView.automaticDimension
-        } else if indexPath.section == 2 {
-            return UITableView.automaticDimension
         } else {
             return UITableView.automaticDimension
         }

@@ -8,6 +8,17 @@
 
 import UIKit
 
+private struct FontSize {
+    static let titleFontSize: CGFloat = 20
+    static let otherFontSize: CGFloat = 12
+    static let dateFontSize: CGFloat = 15
+}
+
+private struct Standard {
+    static let gradeImageSpace: CGFloat = 5
+    static let gradeImageViewSize: CGFloat = 30
+}
+
 class MovieCollectionViewCell: UICollectionViewCell {
     let posterImageView = UIImageView()     // 영화포스터
     let titleLabel = UILabel()              // 영화제목
@@ -30,14 +41,8 @@ class MovieCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private struct FontSize {
-        static let titleFontSize: CGFloat = 20
-        static let otherFontSize: CGFloat = 12
-        static let dateFontSize: CGFloat = 15
-    }
-    
     private func configure() {
-        posterImageView.contentMode = .redraw
+        posterImageView.contentMode = .scaleAspectFit
         self.addSubview(posterImageView)
         
         self.addSubview(gradeImageView)
@@ -62,12 +67,6 @@ class MovieCollectionViewCell: UICollectionViewCell {
         
         dateLabel.font = dateLabel.font.withSize(FontSize.dateFontSize)
         self.addSubview(dateLabel)
-    }
-    
-    private struct Standard {
-        static let space: CGFloat = 10
-        static let gradeImageSpace: CGFloat = 5
-        static let gradeImageViewSize: CGFloat = 30
     }
     
     private func configureLayout() {

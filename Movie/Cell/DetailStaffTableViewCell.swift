@@ -8,11 +8,16 @@
 
 import UIKit
 
+private struct Standard {
+    static let space: CGFloat = 10
+    static let otherSpace: CGFloat = 20
+}
+
 class DetailStaffTableViewCell: UITableViewCell {
-    private let titleLabel = UILabel()
+    let directorLabel = UILabel()       // 감독
+    let actorLabel = UILabel()          // 출연
     
-    let directorLabel = UILabel()
-    let actorLabel = UILabel()
+    private let titleLabel = UILabel()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -36,13 +41,9 @@ class DetailStaffTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    private struct FontSize {
-        static let titleFontSize: CGFloat = 20
-    }
-    
     private func configure() {
-        titleLabel.text = "감독/출연"
-        titleLabel.font = titleLabel.font.withSize(FontSize.titleFontSize)
+        titleLabel.text = "감독 / 출연"
+        titleLabel.font = titleLabel.font.withSize(20)
         self.addSubview(titleLabel)
         
         self.addSubview(directorLabel)
@@ -51,25 +52,19 @@ class DetailStaffTableViewCell: UITableViewCell {
         self.addSubview(actorLabel)
     }
     
-    private struct Standard {
-        static let space: CGFloat = 10
-        static let otherSpace: CGFloat = 20
-    }
-    
     private func configureLayout() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: Standard.space).isActive = true
         titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Standard.space).isActive = true
         
         directorLabel.translatesAutoresizingMaskIntoConstraints = false
-        directorLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor).isActive = true
+        directorLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Standard.space).isActive = true
         directorLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Standard.otherSpace).isActive = true
         
         actorLabel.translatesAutoresizingMaskIntoConstraints = false
-        actorLabel.topAnchor.constraint(equalTo: directorLabel.bottomAnchor).isActive = true
+        actorLabel.topAnchor.constraint(equalTo: directorLabel.bottomAnchor, constant: Standard.space).isActive = true
         actorLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: Standard.otherSpace).isActive = true
         actorLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Standard.space).isActive = true
         actorLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Standard.space).isActive = true
-        
     }
 }

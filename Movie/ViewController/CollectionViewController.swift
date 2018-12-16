@@ -8,36 +8,40 @@
 
 import UIKit
 
+private struct Standard {
+    static let collectionViewSpace: CGFloat = 10
+    static let collectionViewHeight: CGFloat = 300
+}
+
 class CollectionViewController: UIViewController {
-    
     private let movieCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-    
     private let movieCollectionViewCellIdentifier = "MovieCollectionViewCell"
-    
-    private var movies: [Movie] = []
-    private var orderType: OrderType = OrderType.grade
+    private var orderType = OrderType.grade
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configure()
         configureLayout()
-        
     }
     
+    // MARK: - UI
     private func configure() {
-        fetchMovies(type: URLType.grade)
-        
-        // navigate
+        // navigation
         let typeBarButton = UIBarButtonItem(
             image: UIImage(named: "setting"),
             style: UIBarButtonItem.Style.plain,
             target: self,
-            action: #selector(barButtonAction))
+            action: #selector(barButtonAction(_:)))
         typeBarButton.tintColor = .white
         navigationItem.rightBarButtonItem = typeBarButton
         
         // collectionview
+        let refershControl = UIRefreshControl()
+        refershControl.attributedTitle = NSAttributedString(string: "Reload...")
+        refershControl.addTarget(self, action: #selector(reloadData), for: .valueChanged)
+        movieCollectionView.refreshControl = refershControl
+        
         movieCollectionView.dataSource = self
         movieCollectionView.delegate = self
         movieCollectionView.backgroundColor = .white
@@ -45,12 +49,7 @@ class CollectionViewController: UIViewController {
         view.addSubview(movieCollectionView)
         
         // notification
-        NotificationCenter.default.addObserver(self, selector: #selector(fetchMovieNotiAction), name: FetchMovieNotification, object: nil)
-    }
-    
-    private struct Standard {
-        static let collectionViewSpace: CGFloat = 10
-        static let collectionViewHeight: CGFloat = 300
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchMovieNotiAction(_:)), name: FetchMovieNotification, object: nil)
     }
     
     private func configureLayout() {
@@ -61,9 +60,10 @@ class CollectionViewController: UIViewController {
         movieCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
     }
     
+    // MARK: - function
     @objc private func fetchMovieNotiAction(_ noti: Notification) {
         guard let response = noti.userInfo?["response"] as? APIMovieResponse else { return }
-        movies = response.movies
+        MovieSingleton.shared.movies = response.movies
         orderType = OrderType.init(response.orderType)
         DispatchQueue.main.async {
             self.navigationItem.title = self.orderType.type
@@ -72,25 +72,35 @@ class CollectionViewController: UIViewController {
     }
     
     @objc private func barButtonAction(_ sender: UIButton) {
-        alert(vc: self)
+        AlertAction().alert(vc: self)
+    }
+    
+    @objc private func reloadData() {
+        if movieCollectionView.refreshControl!.isRefreshing {
+            MovieService().fetchMovies(type: URLType.grade)
+            movieCollectionView.refreshControl?.endRefreshing()
+        }
     }
 }
 
+// MARK: - extension
 extension CollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return movies.count
+        return MovieSingleton.shared.movies.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let movies = MovieSingleton.shared.movies
+        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: movieCollectionViewCellIdentifier, for: indexPath) as? MovieCollectionViewCell else {return UICollectionViewCell()}
         
-        cell.posterImageView.fetchImage(with: movies[indexPath.row].thumb)
-        cell.titleLabel.text = movies[indexPath.row].title
-        cell.gradeImageView.image = UIImage(named: String(movies[indexPath.row].grade))
-        cell.userRatingLabel.text = movies[indexPath.row].sumUserRating
-        cell.reservationGradeLabel.text = movies[indexPath.row].sumReservationGrade
-        cell.reservationRateLabel.text = movies[indexPath.row].sumReservationRate
-        cell.dateLabel.text = movies[indexPath.row].sumDate
+        cell.posterImageView.fetchImage(with: movies[indexPath.item].thumb)
+        cell.titleLabel.text = movies[indexPath.item].title
+        cell.gradeImageView.image = UIImage(named: String(movies[indexPath.item].grade))
+        cell.userRatingLabel.text = movies[indexPath.item].sumUserRating
+        cell.reservationGradeLabel.text = movies[indexPath.item].sumReservationGrade
+        cell.reservationRateLabel.text = movies[indexPath.item].sumReservationRate
+        cell.dateLabel.text = movies[indexPath.item].sumDate
         
         return cell
     }
@@ -98,8 +108,11 @@ extension CollectionViewController: UICollectionViewDataSource {
 
 extension CollectionViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let movies = MovieSingleton.shared.movies
+        
         let detailVC = DetailViewController()
-        detailVC.id = movies[indexPath.row].id
+        detailVC.id = movies[indexPath.item].id
+        detailVC.navigationItem.title = movies[indexPath.item].title
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }

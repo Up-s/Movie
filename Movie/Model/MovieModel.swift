@@ -91,22 +91,3 @@ enum URLType {
         }
     }
 }
-
-let FetchMovieNotification = Notification.Name("FetchMovie")
-
-func fetchMovies(type: URLType) {
-    guard let url = type.url else { return }
-    let session = URLSession(configuration: .default)
-    let dataTask = session.dataTask(with: url) { (data: Data?, response: URLResponse?, error: Error?) in
-        guard let data = data else {return}
-        do {
-            let apiResponse = try JSONDecoder().decode(APIMovieResponse.self, from: data)
-            NotificationCenter.default.post(name: FetchMovieNotification, object: nil, userInfo: ["response": apiResponse])
-        } catch(let error) {
-            print("error :", error.localizedDescription)
-        }
-    }
-    dataTask.resume()
-}
-
-

@@ -8,6 +8,25 @@
 
 import UIKit
 
+private struct FontSize {
+    static let labelFontSize: CGFloat = 20
+    static let otherFontSize: CGFloat = 12
+}
+
+private struct Standard {
+    static let space: CGFloat = 10
+    static let titleTopSpace: CGFloat = 70
+    static let guardViewSpace: CGFloat = 70
+    static let otherTopSpace: CGFloat = 20
+    
+    static let posterImageViewWdith: CGFloat = 130
+    static let posterImageViewHeight: CGFloat = 200
+    static let gradeImageViewSize: CGFloat = 25
+    static let guardViewWidth: CGFloat = 1
+    static let ratingStarViewHeight: CGFloat = 15
+    static let ratingStarViewWidth: CGFloat = 80
+}
+
 class DetailInfoTableViewCell: UITableViewCell {
     let posterImageView = UIImageView()     // 영화포스터
     let titleLabel = UILabel()              // 영화제목
@@ -46,15 +65,6 @@ class DetailInfoTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
-    }
-    
-    private struct FontSize {
-        static let titleFontSize: CGFloat = 20
-        
-        static let dateFontSize: CGFloat = 15
-        
-        static let labelFontSize: CGFloat = 20
-        static let otherFontSize: CGFloat = 12
     }
     
     private func configure() {
@@ -106,20 +116,6 @@ class DetailInfoTableViewCell: UITableViewCell {
         self.addSubview(audienceLabel)
     }
     
-    private struct Standard {
-        static let space: CGFloat = 10
-        static let titleTopSpace: CGFloat = 70
-        static let guardViewSpace: CGFloat = 70
-        static let topSpace: CGFloat = 20
-        
-        static let posterImageViewWdith: CGFloat = 130
-        static let posterImageViewHeight: CGFloat = 200
-        static let gradeImageViewSize: CGFloat = 25
-        static let guardViewWidth: CGFloat = 1
-        static let ratingStarViewHeight: CGFloat = 15
-        static let ratingStarViewWidth: CGFloat = 80
-    }
-    
     private func configureLayout() {
         posterImageView.translatesAutoresizingMaskIntoConstraints = false
         posterImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: Standard.space).isActive = true
@@ -159,7 +155,7 @@ class DetailInfoTableViewCell: UITableViewCell {
         
         // 예매율
         labelReservationRating.translatesAutoresizingMaskIntoConstraints = false
-        labelReservationRating.topAnchor.constraint(equalTo: posterImageView.bottomAnchor, constant: Standard.topSpace).isActive = true
+        labelReservationRating.topAnchor.constraint(equalTo: posterImageView.bottomAnchor, constant: Standard.otherTopSpace).isActive = true
         labelReservationRating.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
         labelReservationRating.trailingAnchor.constraint(equalTo: guardView1.leadingAnchor).isActive = true
         
@@ -187,7 +183,7 @@ class DetailInfoTableViewCell: UITableViewCell {
         
         // 누적관객수
         labelAudience.translatesAutoresizingMaskIntoConstraints = false
-        labelAudience.topAnchor.constraint(equalTo: posterImageView.bottomAnchor, constant: Standard.topSpace).isActive = true
+        labelAudience.topAnchor.constraint(equalTo: posterImageView.bottomAnchor, constant: Standard.otherTopSpace).isActive = true
         labelAudience.leadingAnchor.constraint(equalTo: guardView2.trailingAnchor).isActive = true
         labelAudience.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
         

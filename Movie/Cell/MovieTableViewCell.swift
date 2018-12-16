@@ -8,6 +8,17 @@
 
 import UIKit
 
+private struct FontSize {
+    static let titleFontSize: CGFloat = 20
+    static let otherFontSize: CGFloat = 12
+    static let dateFontSize: CGFloat = 15
+}
+
+private struct Standard {
+    static let space: CGFloat = 10
+    static let titleTopSpace: CGFloat = 20
+    static let gradeImageViewSize: CGFloat = 25
+}
 
 class MovieTableViewCell: UITableViewCell {
     let posterImageView = UIImageView()     // 영화포스터
@@ -40,13 +51,6 @@ class MovieTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    private struct FontSize {
-        static let titleFontSize: CGFloat = 20
-        static let otherFontSize: CGFloat = 12
-        static let dateFontSize: CGFloat = 15
-    }
-
-    
     private func configure() {
         self.addSubview(posterImageView)
         
@@ -70,12 +74,6 @@ class MovieTableViewCell: UITableViewCell {
         
         dateLabel.font = dateLabel.font.withSize(FontSize.dateFontSize)
         self.addSubview(dateLabel)
-    }
-    
-    private struct Standard {
-        static let space: CGFloat = 10
-        static let titleTopSpace: CGFloat = 20
-        static let gradeImageViewSize: CGFloat = 25
     }
     
     private func configureLayout() {

@@ -54,19 +54,3 @@ struct Detail: Codable {
         return "출연 : \(actor)"
     }
 }
-
-let FetchDetailNotification = Notification.Name("FetchDetail")
-
-func fetchDetail(url: URL) {
-    let session = URLSession(configuration: .default)
-    let dataTask = session.dataTask(with: url) { (data: Data?, response: URLResponse?, error: Error?) in
-        guard let data = data else {return}
-        do {
-            let apiResponse = try JSONDecoder().decode(Detail.self, from: data)
-            NotificationCenter.default.post(name: FetchDetailNotification, object: nil, userInfo: ["response": apiResponse])
-        } catch(let error) {
-            print("error :", error.localizedDescription)
-        }
-    }
-    dataTask.resume()
-}

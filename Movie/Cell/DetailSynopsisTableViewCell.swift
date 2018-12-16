@@ -8,8 +8,12 @@
 
 import UIKit
 
+private struct Standard {
+    static let space: CGFloat = 10
+}
+
 class DetailSynopsisTableViewCell: UITableViewCell {
-    let synopsisTextView = UILabel()
+    let synopsisTextView = UILabel()        // 줄거리
     
     private let labelSynopsis = UILabel()
     
@@ -42,10 +46,6 @@ class DetailSynopsisTableViewCell: UITableViewCell {
         
         synopsisTextView.numberOfLines = 0
         self.addSubview(synopsisTextView)
-    }
-    
-    private struct Standard {
-        static let space: CGFloat = 10
     }
     
     private func configureLayout() {

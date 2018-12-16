@@ -10,33 +10,37 @@ import UIKit
 
 class TableViewController: UIViewController {
     private let movieTableView = UITableView()
-    
     private let movieTableViewCellIdentifier = "MovieTableViewCell"
-
-    private var movies: [Movie] = []
-    private var orderType: OrderType = OrderType.grade
+    private var orderType = OrderType.grade
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // fetch
+        MovieService().fetchMovies(type: URLType.grade)
+        
+        // ui
         configure()
         configureLayout()
-        
     }
     
+    // MARK: - ui
     private func configure() {
-        fetchMovies(type: URLType.grade)
-        
-        // navigate
+        // navigation
         let typeBarButton = UIBarButtonItem(
             image: UIImage(named: "setting"),
             style: UIBarButtonItem.Style.plain,
             target: self,
-            action: #selector(barButtonAction))
+            action: #selector(barButtonAction(_:)))
         typeBarButton.tintColor = .white
         navigationItem.rightBarButtonItem = typeBarButton
         
         // tableview
+        let refershControl = UIRefreshControl()
+        refershControl.attributedTitle = NSAttributedString(string: "Reload...")
+        refershControl.addTarget(self, action: #selector(reloadData), for: .valueChanged)
+        movieTableView.refreshControl = refershControl
+        
         movieTableView.dataSource = self
         movieTableView.delegate = self
         movieTableView.rowHeight = 150
@@ -44,7 +48,7 @@ class TableViewController: UIViewController {
         view.addSubview(movieTableView)
         
         // notification
-        NotificationCenter.default.addObserver(self, selector: #selector(fetchMovieNotiAction), name: FetchMovieNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchMovieNotiAction(_:)), name: FetchMovieNotification, object: nil)
     }
     
     private func configureLayout() {
@@ -55,9 +59,10 @@ class TableViewController: UIViewController {
         movieTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
     }
     
+    // MARK: - function
     @objc private func fetchMovieNotiAction(_ noti: Notification) {
         guard let response = noti.userInfo?["response"] as? APIMovieResponse else { return }
-        movies = response.movies
+        MovieSingleton.shared.movies = response.movies
         orderType = OrderType.init(response.orderType)
         DispatchQueue.main.async {
             self.navigationItem.title = self.orderType.type
@@ -66,17 +71,26 @@ class TableViewController: UIViewController {
     }
     
     @objc private func barButtonAction(_ sender: UIButton) {
-        alert(vc: self)
+        AlertAction().alert(vc: self)
+    }
+    
+    @objc private func reloadData() {
+        if movieTableView.refreshControl!.isRefreshing {
+            MovieService().fetchMovies(type: URLType.grade)
+            movieTableView.refreshControl?.endRefreshing()
+        }
     }
 }
 
-
+// MARK: - extension
 extension TableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return movies.count
+        return MovieSingleton.shared.movies.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let movies = MovieSingleton.shared.movies
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: movieTableViewCellIdentifier) as? MovieTableViewCell else {return UITableViewCell()}
         
         cell.posterImageView.fetchImage(with: movies[indexPath.row].thumb)
@@ -93,8 +107,11 @@ extension TableViewController: UITableViewDataSource {
 
 extension TableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let movies = MovieSingleton.shared.movies
+        
         let detailVC = DetailViewController()
         detailVC.id = movies[indexPath.row].id
+        detailVC.navigationItem.title = movies[indexPath.row].title
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }

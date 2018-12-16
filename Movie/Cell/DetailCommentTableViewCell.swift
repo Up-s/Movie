@@ -8,13 +8,25 @@
 
 import UIKit
 
+private struct FontSize {
+    static let userIdLabelFontSize: CGFloat = 20
+    static let dateLabelFontSize: CGFloat = 15
+}
+
+private struct Standard {
+    static let space: CGFloat = 10
+    static let userImageSize: CGFloat = 50
+    static let ratingStarViewHeight: CGFloat = 15
+    static let ratingStarViewWidth: CGFloat = 80
+}
+
 class DetailCommentTableViewCell: UITableViewCell {
-    private let userImageView = UIImageView()
+    let writerLabel = UILabel()                 // 작성자
+    let ratingStarView = RatingStarView()       // 평점
+    let dateLabel = UILabel()                   // 작성일
+    let commentLabel = UILabel()                // 한줄평
     
-    let userIdLabel = UILabel()
-    let ratingStarView = RatingStarView()
-    let dateLabel = UILabel()
-    let commentLabel = UILabel()
+    private let userImageView = UIImageView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -38,17 +50,12 @@ class DetailCommentTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    private struct FontSize {
-        static let userIdLabelFontSize: CGFloat = 20
-        static let dateLabelFontSize: CGFloat = 15
-    }
-    
     private func configure() {
         userImageView.image = UIImage(named: "user")
         self.addSubview(userImageView)
         
-        userIdLabel.font = userIdLabel.font.withSize(FontSize.userIdLabelFontSize)
-        self.addSubview(userIdLabel)
+        writerLabel.font = writerLabel.font.withSize(FontSize.userIdLabelFontSize)
+        self.addSubview(writerLabel)
         
         self.addSubview(ratingStarView)
         
@@ -60,13 +67,6 @@ class DetailCommentTableViewCell: UITableViewCell {
         self.addSubview(commentLabel)
     }
     
-    private struct Standard {
-        static let space: CGFloat = 10
-        static let userImageSize: CGFloat = 50
-        static let ratingStarViewHeight: CGFloat = 15
-        static let ratingStarViewWidth: CGFloat = 80
-    }
-    
     private func configureLayout() {
         userImageView.translatesAutoresizingMaskIntoConstraints = false
         userImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: Standard.space).isActive = true
@@ -74,18 +74,18 @@ class DetailCommentTableViewCell: UITableViewCell {
         userImageView.widthAnchor.constraint(equalToConstant: Standard.userImageSize).isActive = true
         userImageView.heightAnchor.constraint(equalToConstant: Standard.userImageSize).isActive = true
         
-        userIdLabel.translatesAutoresizingMaskIntoConstraints = false
-        userIdLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: Standard.space).isActive = true
-        userIdLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: Standard.space).isActive = true
+        writerLabel.translatesAutoresizingMaskIntoConstraints = false
+        writerLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: Standard.space).isActive = true
+        writerLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: Standard.space).isActive = true
         
         ratingStarView.translatesAutoresizingMaskIntoConstraints = false
-        ratingStarView.leadingAnchor.constraint(equalTo: userIdLabel.trailingAnchor, constant: Standard.space).isActive = true
-        ratingStarView.centerYAnchor.constraint(equalTo: userIdLabel.centerYAnchor).isActive = true
+        ratingStarView.leadingAnchor.constraint(equalTo: writerLabel.trailingAnchor, constant: Standard.space).isActive = true
+        ratingStarView.centerYAnchor.constraint(equalTo: writerLabel.centerYAnchor).isActive = true
         ratingStarView.heightAnchor.constraint(equalToConstant: Standard.ratingStarViewHeight).isActive = true
         ratingStarView.widthAnchor.constraint(equalToConstant: Standard.ratingStarViewWidth).isActive = true
         
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.topAnchor.constraint(equalTo: userIdLabel.bottomAnchor, constant: Standard.space).isActive = true
+        dateLabel.topAnchor.constraint(equalTo: writerLabel.bottomAnchor, constant: Standard.space).isActive = true
         dateLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: Standard.space).isActive = true
         
         commentLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -93,6 +93,5 @@ class DetailCommentTableViewCell: UITableViewCell {
         commentLabel.leadingAnchor.constraint(equalTo: userImageView.trailingAnchor, constant: Standard.space).isActive = true
         commentLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -Standard.space).isActive = true
         commentLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -Standard.space).isActive = true
-        
     }
 }
