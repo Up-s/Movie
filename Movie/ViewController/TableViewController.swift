@@ -15,7 +15,6 @@ class TableViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         // fetch
         MovieService().fetchMovies(type: URLType.grade)
         
