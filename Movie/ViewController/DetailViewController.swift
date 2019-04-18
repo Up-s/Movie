@@ -158,4 +158,5 @@ extension DetailViewController: UITableViewDelegate {
             return UITableView.automaticDimension
         }
     }
+    
 }

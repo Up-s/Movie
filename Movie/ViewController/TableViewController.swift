@@ -9,6 +9,7 @@
 import UIKit
 
 class TableViewController: UIViewController {
+    
     private let movieTableView = UITableView()
     private let movieTableViewCellIdentifier = "MovieTableViewCell"
     private var orderType = OrderType.grade
@@ -79,6 +80,7 @@ class TableViewController: UIViewController {
             movieTableView.refreshControl?.endRefreshing()
         }
     }
+    
 }
 
 // MARK: - extension
