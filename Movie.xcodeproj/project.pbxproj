@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4FC63A9C22DC2EFD007C64BE /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC63A9B22DC2EFD007C64BE /* Extension.swift */; };
 		F50405A121C655A500EEB471 /* DetailStaffTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50405A021C655A500EEB471 /* DetailStaffTableViewCell.swift */; };
 		F50405A521C65D0300EEB471 /* CommentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50405A421C65D0300EEB471 /* CommentModel.swift */; };
 		F50405A721C6D9DB00EEB471 /* MovieSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50405A621C6D9DA00EEB471 /* MovieSingleton.swift */; };
@@ -30,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4FC63A9B22DC2EFD007C64BE /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		F50405A021C655A500EEB471 /* DetailStaffTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailStaffTableViewCell.swift; sourceTree = "<group>"; };
 		F50405A421C65D0300EEB471 /* CommentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentModel.swift; sourceTree = "<group>"; };
 		F50405A621C6D9DA00EEB471 /* MovieSingleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieSingleton.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				F50405A621C6D9DA00EEB471 /* MovieSingleton.swift */,
+				4FC63A9B22DC2EFD007C64BE /* Extension.swift */,
 				F5AED45F21C0ADB60046B288 /* MovieModel.swift */,
 				F5FE5AF621C616A500297F57 /* DetailModel.swift */,
 				F50405A421C65D0300EEB471 /* CommentModel.swift */,
@@ -173,6 +176,7 @@
 				TargetAttributes = {
 					F5F9E6C421C02296004CDCCA = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -221,6 +225,7 @@
 				F5AED45721C023670046B288 /* CollectionViewController.swift in Sources */,
 				F5AED46021C0ADB60046B288 /* MovieModel.swift in Sources */,
 				F5F9E6C921C02296004CDCCA /* AppDelegate.swift in Sources */,
+				4FC63A9C22DC2EFD007C64BE /* Extension.swift in Sources */,
 				F5FE5AFC21C6200000297F57 /* RatingStarView.swift in Sources */,
 				F5FE5AF121C60B4200297F57 /* DetailSynopsisTableViewCell.swift in Sources */,
 				F5AED45521C0235D0046B288 /* TableViewController.swift in Sources */,
@@ -375,7 +380,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = G4MM77V7NH;
+				DEVELOPMENT_TEAM = ZLN97H98PA;
 				INFOPLIST_FILE = Movie/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -383,7 +388,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.kira1021.Movie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -393,7 +398,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = G4MM77V7NH;
+				DEVELOPMENT_TEAM = ZLN97H98PA;
 				INFOPLIST_FILE = Movie/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -401,7 +406,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.kira1021.Movie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
