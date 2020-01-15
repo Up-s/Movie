@@ -10,8 +10,8 @@
 
 - 열심히 하겠습니다.
 
-<img src="Submit/TableView.png" width="12%" height="12%"></img>
-<img src="Submit/TableViewSort.png" width="12%" height="12%"></img>
-<img src="Submit/CollectionView.png" width="12%" height="12%"></img>
-<img src="Submit/MoveDetail1.png" width="12%" height="12%"></img>
-<img src="Submit/MoveDetail2.png" width="12%" height="12%"></img>
+<img src="Submit/TableView.png" width="20%" height="20%"></img>
+<img src="Submit/TableViewSort.png" width="20%" height="20%"></img>
+<img src="Submit/CollectionView.png" width="20%" height="20%"></img>
+<img src="Submit/MoveDetail1.png" width="20%" height="20%"></img>
+<img src="Submit/MoveDetail2.png" width="20%" height="20%"></img>
